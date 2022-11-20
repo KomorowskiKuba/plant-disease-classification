@@ -6,32 +6,50 @@ import azure.functions as func
 tag_disease_map = {
     'virus-disease': {
         'name': 'Viral disease',
-        'tip': 'sth1'
+        'tips': [
+            'Isolate your diseased plant from rest of your home garden.',
+            'Bad news – your plant is most likely to die. You can try searching for specific treatment or plant protection product, but the chances are low.'
+        ]
     },
     'healthy': {
         'name': 'Healthy',
-        'tip': 'sth2'
+        'tips': [
+            'Your plant seems nice and healthy, good job!',
+            'If you think we are wrong, try to take another picture.'
+        ]
     },
     'fungal-disease': {
         'name': 'Fungal disease',
-        'tip': 'sth3'
+        'tips': [
+            'Get rid of attacked leaves or plant-parts.',
+            'Give your plant less water.',
+            'Ventilate the room more often.',
+            'If most of the plant is attacked, you should get rid of it :(',
+        ]
     },
     'parasite-disease': {
         'name': 'Parasitic disease',
-        'tip': 'sth4'
+        'tips': [
+            'Treatment strongly depends on type of parasite. To have the best results - locate the parasites on your plant and google search their look to find specific treatment guide.',
+            'If you are unable to find exact treatment, you can try mixing water with soap or methylated spirits in a spray bottle and apply it to all foliage.',
+            'You can additionally repot your plant, removing all the old soil, but be gentle!'
+        ]
     },
     'bacterial-disease': {
         'name': 'Bacterial disease',
-        'tip': 'sth5'
+        'tips': [
+            'Isolate your diseased plant from rest of your home garden.',
+            'Bad news – your plant is most likely to die. You can try searching for specific treatment or plant protection product, but the chances are low.'
+        ]
     },
 }
 
 def map_tag_to_disease(name):
     mapping = tag_disease_map[name]
     disease_name = mapping['name']
-    disease_tip = mapping['tip']
+    disease_tips = mapping['tips']
 
-    return disease_name, disease_tip
+    return disease_name, disease_tips
 
 def process_image(image):
     response = requests.post(
@@ -47,20 +65,18 @@ def process_image(image):
     return predictions[0]
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
-    print(req)
-    print(req.files['image'])
     try:
         image = req.files['image']
         prediction = process_image(image)
         probability = prediction['probability']
         name = prediction['tagName']
-        disease_name, disease_tip = map_tag_to_disease(name)
+        disease_name, disease_tips = map_tag_to_disease(name)
 
         return func.HttpResponse(
             json.dumps({
                 'name': disease_name,
                 'probability': probability,
-                'tip': disease_tip
+                'tips': disease_tips
             }),
             status_code=200
         )
