@@ -10,12 +10,9 @@ import axios from 'axios';
 
 function App() {
   const formData = new FormData();
-  const [count, setCount] = useState(0);
   const [probability, setProbability] = useState(0);
   const [name, setName] = useState("");
-  const [tips, setTips] = useState("");
-
-
+  const [tips, setTips] = useState([]);
 
   var n = null;
   var p = null;
@@ -33,11 +30,6 @@ function App() {
   };
 
   const getClassification = async () => {
-
-    console.log(formData.entries().next().done)
-
-    //  const formData 
-    //formData.append("file", file)
     const response = await axios({
       method: "post",
       url: "https://process-and-predict-plant-disease.azurewebsites.net/api/process-image",
@@ -50,22 +42,13 @@ function App() {
         "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
       },
     }).then((res) => {
-      console.log(res.data.name);
-      console.log(res.data.probability);
-      console.log(res.data.tips);
       t = res.data.tips;
       p = res.data.probability;
       n = res.data.name;
-      console.log(t)
-      console.log(p)
-      console.log(n)
       setProbability(res.data.probability)
       setName(res.data.name)
       setTips(res.data.tips)
-
-
     }).then(response => {
-
     })
       .catch(error => {
         console.error(error);
@@ -107,10 +90,10 @@ function App() {
         <p>{name} times</p>
 
         <Card.Text style={{ fontWeight: "bold" }} >Probability:</Card.Text>
-        <p> {probability}</p>
+        <p> {(probability * 100).toFixed(2) + '%'}</p>
 
         <Card.Text style={{ fontWeight: "bold" }}>Tips:</Card.Text>
-        <p> {tips}</p>
+        <ul> {tips.map((item,i) => <li key={i}>{item}</li>)}</ul>
         
 
       </Card>
