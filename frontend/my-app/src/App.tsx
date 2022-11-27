@@ -7,20 +7,19 @@ import { Form } from 'react-bootstrap';
 import { useState } from 'react'
 import axios from 'axios';
 
-export interface Clasiffication {
-  name: string
-  probability: number;
-  tips: string[]
-}
-
 
 function App() {
-  const [file, setFile] = useState(null);
-  const [classification, setClassification] = useState<Clasiffication>();
-  const [name, setName] = useState(null);
-  const [probability, setProbability] = useState(null);
-  const [tips, setTips] = useState(null);
   const formData = new FormData();
+  const [count, setCount] = useState(0);
+  const [probability, setProbability] = useState(0);
+  const [name, setName] = useState("");
+  const [tips, setTips] = useState("");
+
+
+
+  var n = null;
+  var p = null;
+  var t = null;
 
   function onFileUploaded(e: any) {
 
@@ -36,7 +35,7 @@ function App() {
   const getClassification = async () => {
 
     console.log(formData.entries().next().done)
-    
+
     //  const formData 
     //formData.append("file", file)
     const response = await axios({
@@ -50,29 +49,37 @@ function App() {
         "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
         "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
       },
-      // }).then((res) => {
-      //   // let result = (res && res.data && res.data[0].file) || [];
-      //   setName(res.data.name);
-      //   setProbability(res.data.probability);
-      //   setTips(res.data.tips);
+    }).then((res) => {
+      console.log(res.data.name);
+      console.log(res.data.probability);
+      console.log(res.data.tips);
+      t = res.data.tips;
+      p = res.data.probability;
+      n = res.data.name;
+      console.log(t)
+      console.log(p)
+      console.log(n)
+      setProbability(res.data.probability)
+      setName(res.data.name)
+      setTips(res.data.tips)
+
 
     }).then(response => {
-      console.log(response);
+
     })
       .catch(error => {
         console.error(error);
       });;
-    console.log("response:")
-
-    console.log(response)
-
   }
 
   function onFileSent() {
     if (formData.entries().next().done) {
       alert("You have to upload the file before submitting!")
     }
-    getClassification();
+    else {
+      getClassification();
+    }
+
   };
 
 
@@ -94,13 +101,20 @@ function App() {
 
         </Form.Group>
       </Card>
-      <Card className="m-5 p-4">
-        <Card.Text>Your plant disease is probably...</Card.Text>
-        <Card.Text>Probability...</Card.Text>
-        <Card.Text>Tips...</Card.Text>
+      {name != "" && <Card className="m-5 p-4">
 
+        <Card.Text style={{ fontWeight: "bold" }}>Your plant disease is probably:</Card.Text>
+        <p>{name} times</p>
+
+        <Card.Text style={{ fontWeight: "bold" }} >Probability:</Card.Text>
+        <p> {probability}</p>
+
+        <Card.Text style={{ fontWeight: "bold" }}>Tips:</Card.Text>
+        <p> {tips}</p>
+        
 
       </Card>
+      }
 
     </div>
   );
