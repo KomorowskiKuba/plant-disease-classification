@@ -26,18 +26,8 @@ function App() {
 
     const fileExtension = e.target.files[0].name.substring(e.target.files[0].name.lastIndexOf('.') + 1)
 
-    if (fileExtension === 'jpg' || fileExtension === 'png' || fileExtension === 'bmp') {
+    if (fileExtension.toLowerCase() === 'jpg' || fileExtension.toLowerCase() === 'png' || fileExtension.toLowerCase() === 'bmp') {
       formData.append("image", e.target.files[0])
-      setFile(e.target.files[0]);
-      console.log("target files:")
-      console.log(e.target.files[0]);
-
-      console.log("file uploaded")
-      console.log(file)
-
-      console.log("formData")
-      console.log(formData)
-
     } else {
       alert('The file extension must be equal .jpg, .png or .bmp!');
     }
@@ -45,6 +35,7 @@ function App() {
 
   const getClassification = async () => {
 
+    console.log(formData.entries().next().done)
     
     //  const formData 
     //formData.append("file", file)
@@ -78,7 +69,7 @@ function App() {
   }
 
   function onFileSent() {
-    if (!file) {
+    if (formData.entries().next().done) {
       alert("You have to upload the file before submitting!")
     }
     getClassification();
