@@ -21,7 +21,10 @@ function App() {
   };
 
   const onFileSent = async () => {
-
+    if(!file)
+    {
+      alert("You have to upload the file before submitting!")
+    }
   };
 
   return (
@@ -38,7 +41,7 @@ function App() {
         </Form.Group>
         <Form.Group controlId="formFile" className="mt-3" style={{ width: "30%" }}>
           <Form.Control onChange={onFileUploaded} className="mb-3" type="file" />
-          <Button onClick={onFileSent} style={{ backgroundColor: "#166f1f", borderColor: "white", width: "40%" }} type="button" >Upload</Button>
+          <Button onClick={onFileSent} style={{ backgroundColor: "#166f1f", borderColor: "white", width: "40%" }} type="button" >Check</Button>
 
         </Form.Group>
       </Card>
